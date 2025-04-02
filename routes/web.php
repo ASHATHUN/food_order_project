@@ -13,17 +13,6 @@ use App\Http\Controllers\OrderMenuItemController;
 use App\Models\OrderMenuItem;
 use App\Http\Controllers\CategoryController;
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//         'menuItems' => MenuItem::all(),
-//         'categories' => Category::all(), // ดึงข้อมูลหมวดหมู่ทั้งหมด
-//     ]);    
-// })->name('welcome');
-
 Route::get('/', function (\Illuminate\Http\Request $request) {
     $categoryId = $request->query('category_id'); // รับค่า category_id จาก URL
 
@@ -32,7 +21,6 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
     if ($categoryId) {
         $query->where('category_id', $categoryId);
     }
-
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -42,6 +30,7 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
         'categories' => Category::all(), // ดึงข้อมูลหมวดหมู่ทั้งหมด
     ]);
 })->name('welcome');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

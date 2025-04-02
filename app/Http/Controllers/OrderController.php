@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use App\Models\OrderMenuItem; // Import the OrderMenuItem model
-use Illuminate\Support\Facades\Log; // Import the Log facade
+use App\Models\OrderMenuItem;
+use Illuminate\Support\Facades\Log;
+
+use function Laravel\Prompts\alert;
 
 class OrderController extends Controller
 {
@@ -47,7 +49,7 @@ class OrderController extends Controller
                 'cart' => 'required|array',
                 'cart.*.menu_item_id' => 'required|exists:menu_items,id',
                 'cart.*.quantity' => 'required|integer|min:1',
-                'cart.*.unit_price' => 'required|numeric|min:0', // Expect `unit_price` instead of `price`
+                'cart.*.unit_price' => 'required|numeric|min:0',
                 'total_price' => 'required|numeric|min:0',
             ]);
 
@@ -71,10 +73,16 @@ class OrderController extends Controller
 
             session()->flush('cart');
 
-            return response()->json(['message' => 'Order created successfully!'], 201);
+            return Inertia::render('OrderConfirmation', [
+                'message' => 'Order created successfully!',
+                'order' => $order, // ส่งข้อมูลคำสั่งซื้อ
+            ]);
         } catch (\Exception $e) {
             Log::error('Order Error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return Inertia::render('OrderError', [
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -128,8 +136,7 @@ class OrderController extends Controller
         // บันทึกข้อมูลลง Session
         session(['cart' => $cart]);
 
-        // ส่ง response กลับไปที่ React
-        return response()->json([
+        return Inertia::render('Welcome', [
             'message' => 'Item added to cart',
             'cart' => $cart,
             'count' => count($cart),
@@ -137,26 +144,24 @@ class OrderController extends Controller
     }
 
     public function removeFromCart(Request $request)
-{
-    $validated = $request->validate([
-        'menu_item_id' => 'required|exists:menu_items,id',
-    ]);
+    {
+        $validated = $request->validate([
+            'menu_item_id' => 'required|exists:menu_items,id',
+        ]);
 
-    // ดึงข้อมูลตะกร้าจาก session
-    $cart = session('cart', []);
+        // ดึงข้อมูลตะกร้าจาก session
+        $cart = session('cart', []);
 
-    $menuItemId = $request->menu_item_id;
+        $menuItemId = $request->menu_item_id;
 
-    if (isset($cart[$menuItemId])) {
-        unset($cart[$menuItemId]); // ลบสินค้าออกจากตะกร้า
-        session(['cart' => $cart]); // อัปเดต session
+        if (isset($cart[$menuItemId])) {
+            unset($cart[$menuItemId]); // ลบสินค้าออกจากตะกร้า
+            session(['cart' => $cart]); // อัปเดต session
+        }
+
+        return Inertia::render('CartPage', [
+            'cart' => $cart,
+            'count' => count($cart),
+        ]);
     }
-
-    return response()->json([
-        'message' => 'Item removed from cart',
-        'cart' => $cart,
-        'count' => count($cart),
-    ]);
-}
-
 }

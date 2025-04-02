@@ -19,9 +19,9 @@ export default function Create({ categories = [] }) {
 
     return (
         <AuthenticatedLayout>
-            <div className="max-w-4xl mx-auto bg-white shadow-md rounded p-6 mt-6">
+            <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 mt-6">
                 <h1 className="text-2xl font-bold mb-4">
-                    Create New Menu Item
+                    Create New Menu
                 </h1>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     {/* Name Field */}
@@ -35,6 +35,7 @@ export default function Create({ categories = [] }) {
                         <input
                             type="text"
                             id="name"
+                            placeholder="Please enter menu name"
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -56,6 +57,7 @@ export default function Create({ categories = [] }) {
                         </label>
                         <textarea
                             id="description"
+                            placeholder="Please enter menu description"
                             value={data.description}
                             onChange={(e) =>
                                 setData("description", e.target.value)

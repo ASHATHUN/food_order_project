@@ -14,11 +14,11 @@ class MenuItemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
+
     public function index(Request $request)
     {
         $category_id = $request->input('category_id');
-    
+
         $menuItems = DB::table('menu_items')
             ->join('categories', 'menu_items.category_id', '=', 'categories.id')
             ->select(
@@ -34,17 +34,17 @@ class MenuItemController extends Controller
                 return $query->where('menu_items.category_id', $category_id);
             })
             ->get();
-    
+
         // ดึงข้อมูลหมวดหมู่ทั้งหมด
         $categories = DB::table('categories')->select('id', 'name')->get();
 
         dd(Category::pluck('name'));
 
 
-    
+
         return Inertia::render('Welcome', [
             'menuItems' => $menuItems,
-            'categories' => $categories, // ต้องส่ง categories ไปด้วย
+            'categories' => $categories, 
         ]);
     }
 

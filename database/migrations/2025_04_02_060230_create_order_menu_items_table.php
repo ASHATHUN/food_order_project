@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('menu_item_id')->constrained('menu_items')->onDelete('cascade');
             $table->integer('quantity')->default(1);
-            $table->decimal('unit_price', 10, 2); // ราคาต่อชิ้น
-            $table->decimal('total_price', 10, 2); // ราคารวม
+            $table->decimal('unit_price', 10, 2); 
+            $table->decimal('total_price', 10, 2); 
             $table->timestamps();
         });
     }
