@@ -135,4 +135,28 @@ class OrderController extends Controller
             'count' => count($cart),
         ]);
     }
+
+    public function removeFromCart(Request $request)
+{
+    $validated = $request->validate([
+        'menu_item_id' => 'required|exists:menu_items,id',
+    ]);
+
+    // ดึงข้อมูลตะกร้าจาก session
+    $cart = session('cart', []);
+
+    $menuItemId = $request->menu_item_id;
+
+    if (isset($cart[$menuItemId])) {
+        unset($cart[$menuItemId]); // ลบสินค้าออกจากตะกร้า
+        session(['cart' => $cart]); // อัปเดต session
+    }
+
+    return response()->json([
+        'message' => 'Item removed from cart',
+        'cart' => $cart,
+        'count' => count($cart),
+    ]);
+}
+
 }

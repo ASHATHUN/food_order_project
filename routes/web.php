@@ -69,6 +69,10 @@ Route::get('/dashboard', [OrderMenuItemController::class, 'dashboard'])->name('d
 
 Route::get('/api/categories', [CategoryController::class, 'index']);
 
+Route::post('/cart/remove', [OrderController::class, 'removeFromCart']);
+
+
+
 
 
 require __DIR__ . '/auth.php';
