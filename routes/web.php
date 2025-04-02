@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use App\Models\MenuItem;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -34,7 +35,17 @@ Route::get('/menu/create', [MenuItemController::class, 'create'])->name('menu.cr
 
 Route::post('/menu/store', [MenuItemController::class, 'store'])->name('menu.store');
 
-Route::get('/order', [OrderController::class, 'index'])->name('orders.index');
+
+Route::post('/orders/add-to-cart', [OrderController::class, 'addToCart'])->name('orders.addToCart');
+
+Route::get('/orders/cart', [OrderController::class, 'index'])->name('orders.index');
+Route::get('/api/cart-count', function () {
+    $cart = session('cart', []);
+    return response()->json(['count' => count($cart)]);
+});
+
+Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
+
 
 
 

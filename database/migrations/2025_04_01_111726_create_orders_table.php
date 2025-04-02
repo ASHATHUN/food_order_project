@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('table_id')->constrained('restaurant_tables')->onDelete('cascade');
-            $table->foreignId('menu_item_id')->constrained('menu_items')->onDelete('cascade');
-            $table->integer('quantity')->default(1);
-            $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });
+        
     }
 
     /**

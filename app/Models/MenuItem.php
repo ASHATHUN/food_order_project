@@ -9,7 +9,7 @@ use Illuminate\Testing\Fluent\Concerns\Has;
 class MenuItem extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'price',
@@ -18,12 +18,14 @@ class MenuItem extends Model
         'image_path',
     ];
 
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function OrderMenuItem()
+    {
+        return $this->hasMany(OrderMenuItem::class);
     }
 }

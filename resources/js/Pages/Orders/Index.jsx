@@ -1,120 +1,210 @@
-import React from "react";
-import { Inertia } from "@inertiajs/inertia";
-import { Head, Link } from "@inertiajs/react";
+// // import React from "react";
+// // import { usePage } from "@inertiajs/react";
 
-export default function Index({ orders, auth, menuItems }) {
-    const totalPrice = orders.reduce(
-        (sum, order) => sum + order.quantity * order.menu_item?.price,
+// // export default function Index({ tables }) {
+// //     const { cart } = usePage().props; // ดึงข้อมูลจาก session
+
+// //     const totalPrice = cart ? cart.reduce((sum, item) => sum + item.price * item.quantity, 0) : 0;
+
+// //     const tableCount = tables ? tables.length : 0; // จำนวนโต๊ะที่มีในระบบ
+
+// //     return (
+// //         <div>
+
+// //             <h1>ตะกร้าสินค้า</h1>
+// //             {cart && cart.length === 0 ? (
+// //                 <p>ไม่มีสินค้าในตะกร้า</p>
+// //             ) : (
+// //                 <div>
+// //                     <h3>จำนวนสินค้าที่สั่ง: {cart ? cart.length : 0}</h3>
+// //                     <ul>
+// //                         {cart &&
+// //                             cart.map((item) => (
+// //                                 <li key={item.menu_item_id}>
+// //                                     {item.name} - {item.quantity} ชิ้น - {item.price} บาท
+// //                                 </li>
+// //                             ))}
+// //                     </ul>
+// //                     <h3>ราคารวม: {totalPrice} บาท</h3>
+
+// //                 </div>
+// //             )}
+// //         </div>
+// //     );
+// // }
+
+// import { usePage } from "@inertiajs/react";
+// import { useState } from "react";
+
+// import { Inertia } from "@inertiajs/inertia";
+
+// export default function Index({}) {
+//     const { cart = [], tables = [] } = usePage().props; // ดึงข้อมูลจาก session
+//     console.log("ตะกร้าสินค้า:", cart);
+//     console.log("ข้อมูลโต๊ะ:", tables);
+//     const [selectedTable, setSelectedTable] = useState(""); // เก็บค่าที่เลือก
+//     const totalPrice = cart
+//         ? cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+//         : 0;
+
+//     const handleSubmitOrder = () => {
+//         if (!selectedTable) {
+//             alert("กรุณาเลือกโต๊ะก่อนสั่งซื้อ!");
+//             return;
+//         }
+
+//         Inertia.post("/orders/store", {
+//             table_id: selectedTable,
+//             cart: cart,
+//             total_price: totalPrice,
+//         });
+//     };
+
+//     return (
+//         <div>
+//             <h1>ตะกร้าสินค้า</h1>
+
+//             {cart && cart.length === 0 ? (
+//                 <p>ไม่มีสินค้าในตะกร้า</p>
+//             ) : (
+//                 <div>
+//                     <h3>จำนวนสินค้าที่สั่ง: {cart.length}</h3>
+//                     <ul>
+//                         {cart.map((item) => (
+//                             <li key={item.menu_item_id}>
+//                                 {item.name} - {item.quantity} ชิ้น -{" "}
+//                                 {item.price} บาท
+//                             </li>
+//                         ))}
+//                     </ul>
+//                     <h3>ราคารวม: {totalPrice} บาท</h3>
+
+//                     {/* Dropdown เลือกโต๊ะ */}
+//                     <div className="mt-4">
+//                         <label className="block text-lg font-bold">
+//                             เลือกโต๊ะ:
+//                         </label>
+//                         <select
+//                             id="table"
+//                             value={selectedTable}
+//                             onChange={(e) => setSelectedTable(e.target.value)}
+//                             className="border p-2 rounded"
+//                         >
+//                             <option value="">-- กรุณาเลือกโต๊ะ --</option>
+//                             {tables.map((table) => (
+//                                 <option key={table.id} value={table.id}>
+//                                     {table.name}
+//                                 </option>
+//                             ))}
+//                         </select>
+//                     </div>
+
+//                     {/* ปุ่มยืนยันคำสั่งซื้อ */}
+//                     <button
+//                         onClick={handleSubmitOrder}
+//                         className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+//                     >
+//                         ยืนยันคำสั่งซื้อ
+//                     </button>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// }
+import { usePage } from "@inertiajs/react";
+import { useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
+
+export default function Index() {
+    const { cart = [], tables = [] } = usePage().props; // รับข้อมูลโต๊ะจาก Inertia
+    const [selectedTable, setSelectedTable] = useState(""); // เก็บค่าที่เลือก
+    const totalPrice = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
         0
     );
 
-    return (
-        <>
-            <nav className="flex items-center justify-end px-6 py-4 bg-red-500 dark:bg-gray-900">
-                {auth.user ? (
-                    <Link
-                        href={route("dashboard")}
-                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                    >
-                        Dashboard
-                    </Link>
-                ) : (
-                    <>
-                        <Link
-                            href={route("login")}
-                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Log in
-                        </Link>
-                        <Link
-                            href={route("register")}
-                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Register
-                        </Link>
-                    </>
-                )}
-            </nav>
+    const handleSubmitOrder = () => {
+        if (!selectedTable) {
+            alert("กรุณาเลือกโต๊ะก่อนสั่งซื้อ!");
+            return;
+        }
 
-            <div className="container mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-4">Order Receipt</h1>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    {orders.map((order) => (
-                        <div
-                            key={order.id}
-                            className="flex items-center border-b py-4"
+        // ✅ เปลี่ยน price เป็น unit_price ก่อนส่งไป Backend
+        const formattedCart = cart.map((item) => ({
+            menu_item_id: item.menu_item_id ?? item.id,
+            name: item.name,
+            unit_price: item.price, // ✅ ใช้ unit_price แทน price
+            quantity: item.quantity,
+        }));
+
+        console.log("Formatted Cart:", formattedCart);
+
+        Inertia.post(
+            "/orders/store",
+            {
+                table_id: selectedTable,
+                cart: formattedCart,
+                total_price: totalPrice,
+            },
+            {
+                onSuccess: () => {
+                    alert("สั่งซื้อสำเร็จ!");
+                },
+                onError: (errors) => {
+                    console.error("Error:", errors);
+                    alert("เกิดข้อผิดพลาด!");
+                },
+            }
+        );
+    };
+
+    return (
+        <div>
+            <h1>ตะกร้าสินค้า</h1>
+
+            {cart.length === 0 ? (
+                <p>ไม่มีสินค้าในตะกร้า</p>
+            ) : (
+                <div>
+                    <h3>จำนวนสินค้าที่สั่ง: {cart.length}</h3>
+                    <ul>
+                        {cart.map((item) => (
+                            <li key={item.menu_item_id}>
+                                {item.name} - {item.quantity} ชิ้น -{" "}
+                                {item.price} บาท
+                            </li>
+                        ))}
+                    </ul>
+                    <h3>ราคารวม: {totalPrice} บาท</h3>
+
+                    {/* Dropdown เลือกโต๊ะ */}
+                    <div className="mt-4">
+                        <label className="block text-lg font-bold">
+                            เลือกโต๊ะ:
+                        </label>
+                        <select
+                            value={selectedTable}
+                            onChange={(e) => setSelectedTable(e.target.value)}
+                            className="border p-2 rounded"
                         >
-                            <img
-                                src={order.menu_item?.image_url}
-                                alt={order.menu_item?.name}
-                                className="w-16 h-16 rounded mr-4"
-                            />
-                            <div className="flex-grow">
-                                <h2 className="text-lg font-semibold">
-                                    {order.menu_item?.name || "-"}
-                                </h2>
-                                <p className="text-gray-600">
-                                    ${order.menu_item?.price.toFixed(2)} each
-                                </p>
-                            </div>
-                            <div className="flex items-center">
-                                <button
-                                    onClick={() =>
-                                        Inertia.post(
-                                            `/orders/${order.id}/decrease`
-                                        )
-                                    }
-                                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded mx-1"
-                                >
-                                    -
-                                </button>
-                                <span className="px-4">{order.quantity}</span>
-                                <button
-                                    onClick={() =>
-                                        Inertia.post(
-                                            `/orders/${order.id}/increase`
-                                        )
-                                    }
-                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mx-1"
-                                >
-                                    +
-                                </button>
-                            </div>
-                            <p className="ml-6 text-lg font-bold">
-                                $
-                                {(
-                                    order.quantity * order.menu_item?.price
-                                ).toFixed(2)}
-                            </p>
-                            <button
-                                onClick={() =>
-                                    Inertia.delete(`/orders/${order.id}`)
-                                }
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-6"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    ))}
-                    <div className="mt-6 text-right text-xl font-bold">
-                        Total: ${totalPrice.toFixed(2)}
+                            <option value="">-- กรุณาเลือกโต๊ะ --</option>
+                            {tables.map((table) => (
+                                <option key={table.id} value={table.id}>
+                                    {table.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <div className="mt-4 flex justify-between">
-                        <button
-                            onClick={() => Inertia.visit("/products")}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Back to Products
-                        </button>
-                        <button
-                            onClick={() => Inertia.post("/orders/checkout")}
-                            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Checkout
-                        </button>
-                    </div>
+
+                    {/* ปุ่มยืนยันคำสั่งซื้อ */}
+                    <button
+                        onClick={handleSubmitOrder}
+                        className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        ยืนยันคำสั่งซื้อ
+                    </button>
                 </div>
-            </div>
-        </>
+            )}
+        </div>
     );
-}   
+}
