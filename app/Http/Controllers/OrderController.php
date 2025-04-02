@@ -44,11 +44,11 @@ class OrderController extends Controller
 
             $data = $request->validate([
                 'table_id' => 'required|integer|exists:restaurant_tables,id',
-    'cart' => 'required|array',
-    'cart.*.menu_item_id' => 'required|exists:menu_items,id',
-    'cart.*.quantity' => 'required|integer|min:1',
-    'cart.*.unit_price' => 'required|numeric|min:0', // Expect `unit_price` instead of `price`
-    'total_price' => 'required|numeric|min:0',
+                'cart' => 'required|array',
+                'cart.*.menu_item_id' => 'required|exists:menu_items,id',
+                'cart.*.quantity' => 'required|integer|min:1',
+                'cart.*.unit_price' => 'required|numeric|min:0', // Expect `unit_price` instead of `price`
+                'total_price' => 'required|numeric|min:0',
             ]);
 
             // บันทึกข้อมูลออเดอร์
@@ -58,7 +58,7 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            
+
             foreach ($data['cart'] as $item) {
                 OrderMenuItem::create([
                     'order_id' => $order->id,
@@ -68,6 +68,8 @@ class OrderController extends Controller
                     'total_price' => $item['quantity'] * $item['unit_price'], // Calculate total price
                 ]);
             }
+
+            session()->flush('cart');
 
             return response()->json(['message' => 'Order created successfully!'], 201);
         } catch (\Exception $e) {
@@ -129,6 +131,7 @@ class OrderController extends Controller
         // ส่ง response กลับไปที่ React
         return response()->json([
             'message' => 'Item added to cart',
+            'cart' => $cart,
             'count' => count($cart),
         ]);
     }
