@@ -14,9 +14,38 @@ class MenuItemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    
+    public function index(Request $request)
     {
-        
+        $category_id = $request->input('category_id');
+    
+        $menuItems = DB::table('menu_items')
+            ->join('categories', 'menu_items.category_id', '=', 'categories.id')
+            ->select(
+                'menu_items.id',
+                'menu_items.name',
+                'menu_items.description',
+                'menu_items.price',
+                'menu_items.image',
+                'categories.id as category_id',
+                'categories.name as category_name'
+            )
+            ->when($category_id, function ($query) use ($category_id) {
+                return $query->where('menu_items.category_id', $category_id);
+            })
+            ->get();
+    
+        // ดึงข้อมูลหมวดหมู่ทั้งหมด
+        $categories = DB::table('categories')->select('id', 'name')->get();
+
+        dd(Category::pluck('name'));
+
+
+    
+        return Inertia::render('Welcome', [
+            'menuItems' => $menuItems,
+            'categories' => $categories, // ต้องส่ง categories ไปด้วย
+        ]);
     }
 
     /**

@@ -5,26 +5,43 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Application;
 use App\Models\MenuItem;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderMenuItemController;
 use App\Models\OrderMenuItem;
+use App\Http\Controllers\CategoryController;
 
-Route::get('/', function () {
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//         'menuItems' => MenuItem::all(),
+//         'categories' => Category::all(), // ดึงข้อมูลหมวดหมู่ทั้งหมด
+//     ]);    
+// })->name('welcome');
+
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    $categoryId = $request->query('category_id'); // รับค่า category_id จาก URL
+
+    // สร้าง query เมนู โดยกรองตาม category_id ถ้ามีค่า
+    $query = MenuItem::query();
+    if ($categoryId) {
+        $query->where('category_id', $categoryId);
+    }
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'menuItems' => MenuItem::all()
+        'menuItems' => $query->get(), // ดึงเฉพาะเมนูของหมวดหมู่ที่เลือก
+        'categories' => Category::all(), // ดึงข้อมูลหมวดหมู่ทั้งหมด
     ]);
 })->name('welcome');
-
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -50,7 +67,8 @@ Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.st
 
 Route::get('/dashboard', [OrderMenuItemController::class, 'dashboard'])->name('dashboard');
 
+Route::get('/api/categories', [CategoryController::class, 'index']);
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

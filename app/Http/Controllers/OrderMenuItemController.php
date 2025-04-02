@@ -65,59 +65,37 @@ class OrderMenuItemController extends Controller
         //
     }
 
-    // public function dashboard()
-    // {
-    //     $orderMenuItems = DB::table('order_menu_items')
-    //     ->join('orders', 'order_menu_items.order_id', '=', 'orders.id')
-    //     ->join('menu_items', 'order_menu_items.menu_item_id', '=', 'menu_items.id')
-    //     ->select(
-    //         'order_menu_items.id as order_menu_item_id',
-    //         'orders.id as order_id',
-    //         'menu_items.id as menu_item_id',
-    //         'menu_items.name as menu_item_name',    
-    //         'menu_items.price as menu_item_price',
-    //         'order_menu_items.quantity as quantity',
-    //         'order_menu_items.unit_price as unit_price',
-    //         'order_menu_items.total_price as total_price',
-    //         'orders.table_id as table_id',
-    //         'orders.created_at as order_created_at',
-    //         'orders.updated_at as order_updated_at'
-    //     )->get();
 
-    //     return Inertia::render('Dashboard', [
-    //         'orderMenuItems' => $orderMenuItems
-    //     ]);
-    // }
     public function dashboard()
-{
-    $orders = OrderMenuItem::select(
-        'order_id',
-        'menu_item_id',
-        'quantity',
-        'unit_price',
-        'total_price'
-    )
-    ->with('menuItem:id,name') // ดึงชื่อของเมนูจากตาราง menu_items
-    ->get()
-    ->groupBy('order_id') // แยกตาม order_id
-    ->map(function ($items, $orderId) {
-        return [
-            'order_id' => $orderId,
-            'items' => $items->map(function ($item) {
+    {
+        $orders = OrderMenuItem::select(
+            'order_id',
+            'menu_item_id',
+            'quantity',
+            'unit_price',
+            'total_price'
+        )
+            ->with('menuItem:id,name') // ดึงชื่อของเมนูจากตาราง menu_items
+            ->get()
+            ->groupBy('order_id') // แยกตาม order_id
+            ->map(function ($items, $orderId) {
                 return [
-                    'name' => $item->menuItem->name ?? 'Unknown', // แสดงชื่อเมนู
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->unit_price,
-                    'total_price' => $item->total_price,
+                    'order_id' => $orderId,
+                    'items' => $items->map(function ($item) {
+                        return [
+                            'name' => $item->menuItem->name ?? 'Unknown', // แสดงชื่อเมนู
+                            'quantity' => $item->quantity,
+                            'unit_price' => $item->unit_price,
+                            'total_price' => $item->total_price,
+                        ];
+                    }),
+                    'total_bill' => $items->sum('total_price'), // รวมราคารวมของบิล
                 ];
-            }),
-            'total_bill' => $items->sum('total_price'), // รวมราคารวมของบิล
-        ];
-    })
-    ->values();
+            })
+            ->values();
 
-    return Inertia::render('Dashboard', [
-        'orders' => $orders
-    ]);
-}
+        return Inertia::render('Dashboard', [
+            'orders' => $orders
+        ]);
+    }
 }
