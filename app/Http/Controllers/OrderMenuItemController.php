@@ -19,6 +19,7 @@ class OrderMenuItemController extends Controller
             'total_price'
         )
             ->with('menuItem:id,name') // ดึงชื่อของเมนูจากตาราง menu_items
+            ->orderBy('order_id', 'desc')
             ->get()
             ->groupBy('order_id') // แยกตาม order_id
             ->map(function ($items, $orderId) {
