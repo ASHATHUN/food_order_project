@@ -952,16 +952,24 @@ export default function Welcome({ auth, menuItems = [], categories = [] }) {
             </nav>
 
             <div className="min-h-screen bg-orange-100 p-6">
-                <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+                <div
+                    className="bg-cover bg-center p-6 shadow-lg rounded-lg mb-6 w-6/12 h-96 center mx-auto"
+                    style={{
+                        backgroundImage:
+                            "url('https://scontent.fcnx3-1.fna.fbcdn.net/v/t39.30808-6/488183988_595725206834352_6292035432484476891_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_ohc=zJB5_y154C0Q7kNvgFEAMZM&_nc_oc=Adm15gElZdzXNXHlaUAcIuorigDg7fUCjAwsk2a7qtDGvr0v3LwIDrf9-AUzmlcfuyQ&_nc_zt=23&_nc_ht=scontent.fcnx3-1.fna&_nc_gid=1MBoGjUgFCIzzQsklTpXpA&oh=00_AYH198UvxFJZfOIhe8g3dXi6yIRonaYiUaK5vlo0V8WHDw&oe=67F350F9')",
+                    }}
+                />
+                <br />
+                <h1 className="text-6xl font-bold font-sans text-center text-gray-800 mb-6">
                     MENU
                 </h1>
 
                 <div className="flex justify-end mb-6">
                     <button
                         onClick={() => Inertia.visit(route("orders.index"))}
-                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
                     >
-                        <span>เช็คสินค้าที่สั่ง ({cartCount})</span>
+                        <span>Check Orders ({cartCount})</span>
                     </button>
                 </div>
 
@@ -988,11 +996,12 @@ export default function Welcome({ auth, menuItems = [], categories = [] }) {
                                     <img
                                         src={`/storage/${item.image}`}
                                         alt={item.name}
-                                        className="w-full h-40 object-cover rounded"
+                                        className="w-full h-80 object-cover rounded"
                                     />
                                 ) : (
                                     <span>No Image</span>
                                 )}
+                                <br />
 
                                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                                     {item.name}
@@ -1006,7 +1015,7 @@ export default function Welcome({ auth, menuItems = [], categories = [] }) {
                                 </p>
                                 <button
                                     onClick={() => handleAddToCart(item)}
-                                    className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    className="mt-4 bg-yellow-500 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded w-full"
                                 >
                                     Add to Cart
                                 </button>

@@ -178,7 +178,7 @@ export default function Index() {
 
     const handleRemoveItem = (menuItemId) => {
         Inertia.post(
-            "/cart/remove", 
+            "/cart/remove",
             { menu_item_id: menuItemId },
             {
                 onSuccess: () => {
@@ -191,24 +191,19 @@ export default function Index() {
             }
         );
     };
-    
-
-    
 
     return (
-        <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold text-center mb-6">
-                ตะกร้าสินค้า
-            </h1>
+        <div className="container mx-auto p-6 bg-orange-100 min-h-screen">
+            <h1 className="text-3xl font-bold text-center mb-6">Your Order</h1>
 
             {isCartEmpty ? (
                 <p className="text-center text-gray-500 text-lg">
-                    ไม่มีสินค้าในตะกร้า
+                    No items in your cart
                 </p>
             ) : (
-                <div className="bg-white shadow-md rounded-lg p-6">
+                <div className="bg-white shadow-md rounded-lg p-6 max-w-5xl mx-auto ">
                     <h3 className="text-xl font-semibold mb-4">
-                        จำนวนสินค้าที่สั่ง: {cartArray.length}
+                        Total Items : {cartArray.length}
                     </h3>
                     <ul className="space-y-4">
                         {cartArray.map((item) => (
@@ -216,35 +211,41 @@ export default function Index() {
                                 key={item.menu_item_id ?? item.id}
                                 className="flex justify-between items-center border-b pb-2"
                             >
-                                <span className="font-medium">{item.name}</span>
-                                <span>
-                                    {item.quantity} ชิ้น - {item.price} บาท
+                                <span className="font-medium text-gray-600">{item.name}</span>
+                                <span className="text-gray-600">
+                                    {item.quantity} pcs - {item.price} ฿
                                 </span>
                                 <button
-                onClick={() => handleRemoveItem(item.menu_item_id ?? item.id)}
-                className="ml-4 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded"
-            >
-                ลบ
-            </button>
+                                    onClick={() =>
+                                        handleRemoveItem(
+                                            item.menu_item_id ?? item.id
+                                        )
+                                    }
+                                    className="ml-4 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded"
+                                >
+                                    Remove
+                                </button>
                             </li>
                         ))}
                     </ul>
                     <h3 className="text-xl font-semibold mt-6">
-                        ราคารวม:{" "}
-                        <span className="text-green-600">{totalPrice} บาท</span>
+                        Total Price:{" "}
+                        <span className="text-green-600">{totalPrice} ฿</span>
                     </h3>
 
                     {/* Dropdown เลือกโต๊ะ */}
                     <div className="mt-6">
                         <label className="block text-lg font-bold mb-2">
-                            เลือกโต๊ะ:
+                            Select a Table:
                         </label>
                         <select
                             value={selectedTable}
                             onChange={(e) => setSelectedTable(e.target.value)}
-                            className="border p-2 rounded w-full"
+                            className="border p-2 rounded w-full text-gray-600"
                         >
-                            <option value="">-- กรุณาเลือกโต๊ะ --</option>
+                            <option value="">
+                                -- Please select a table --
+                            </option>
                             {tables.map((table) => (
                                 <option key={table.id} value={table.id}>
                                     {table.name}
@@ -258,8 +259,16 @@ export default function Index() {
                         onClick={handleSubmitOrder}
                         className="mt-6 w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
                     >
-                        ยืนยันคำสั่งซื้อ
+                        Confirm Order
                     </button>
+
+                    <button
+                        onClick={() => Inertia.visit(route("welcome"))}
+                        className="mt-4 w-full bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+                    >
+                        Back to Menu
+                    </button>
+
                 </div>
             )}
         </div>
