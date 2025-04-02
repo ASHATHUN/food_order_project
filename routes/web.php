@@ -8,6 +8,8 @@ use App\Models\MenuItem;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderMenuItemController;
+use App\Models\OrderMenuItem;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -20,9 +22,9 @@ Route::get('/', function () {
 })->name('welcome');
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,6 +48,7 @@ Route::get('/api/cart-count', function () {
 
 Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
 
+Route::get('/dashboard', [OrderMenuItemController::class, 'dashboard'])->name('dashboard');
 
 
 
